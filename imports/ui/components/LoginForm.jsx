@@ -107,9 +107,6 @@ class LoginForm extends Component {
   }
 
   translate(text) {
-    // if (this.props.t) {
-    //   return this.props.t(text);
-    // }
     return T9n.get(text);
   }
 
@@ -793,6 +790,9 @@ class LoginForm extends Component {
     }
   }
 
+  /*
+   * Validate either username or email
+   */
   loginWithoutPassword(){
     const {
       email = '',
@@ -806,15 +806,14 @@ class LoginForm extends Component {
       return;
     }
 
-    if (this.validateField('email', email)) {
+    if (email && this.validateField('email', email)) {
       this.setState({ waiting: true });
-
       Accounts.loginWithoutPassword({ email: email }, (error) => {
         if (error) {
           this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
         }
         else {
-          this.showMessage(this.translate("info.emailSent"), 'success', 5000);
+          this.showMessage("info.emailSent", 'success', 5000);
           this.clearDefaultFieldValues();
         }
         onSubmitHook(error, formState);
@@ -822,13 +821,12 @@ class LoginForm extends Component {
       });
     } else if (this.validateField('username', usernameOrEmail)) {
       this.setState({ waiting: true });
-
       Accounts.loginWithoutPassword({ email: usernameOrEmail, username: usernameOrEmail }, (error) => {
         if (error) {
           this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
         }
         else {
-          this.showMessage(this.translate("info.emailSent"), 'success', 5000);
+          this.showMessage("info.emailSent", 'success', 5000);
           this.clearDefaultFieldValues();
         }
         onSubmitHook(error, formState);

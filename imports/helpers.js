@@ -21,7 +21,7 @@ export function getLoginServices() {
   return services.map(function(name){
     return {name: name};
   });
-};
+}
 // Export getLoginServices using old style globals for accounts-base which
 // requires it.
 this.getLoginServices = getLoginServices;
@@ -29,7 +29,7 @@ this.getLoginServices = getLoginServices;
 export function hasPasswordService() {
   // First look for OAuth services.
   return !!Package['accounts-password'];
-};
+}
 
 export function loginResultCallback(service, err) {
   if (!err) {
@@ -51,11 +51,11 @@ export function loginResultCallback(service, err) {
       service();
     }
   }
-};
+}
 
 export function passwordSignupFields() {
   return Accounts.ui._options.passwordSignupFields || "EMAIL_ONLY_NO_PASSWORD";
-};
+}
 
 export function validateEmail(email, showMessage, clearMessage) {
   if (passwordSignupFields() === "USERNAME_AND_OPTIONAL_EMAIL" && email === '') {
@@ -77,11 +77,11 @@ export function validatePassword(password = '', showMessage, clearMessage){
     return true;
   } else {
     // const errMsg = T9n.get("error.minChar").replace(/7/, Accounts.ui._options.minimumPasswordLength);
-    const errMsg = "error.minChar"
+    const errMsg = "error.minChar";
     showMessage(errMsg, 'warning', false, 'password');
     return false;
   }
-};
+}
 
 export function validateUsername(username, showMessage, clearMessage, formState) {
   if ( username ) {
