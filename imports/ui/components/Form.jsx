@@ -28,7 +28,6 @@ export class Form extends React.Component {
       buttons,
       error,
       messages,
-      translate,
       ready = true,
       className
     } = this.props;
@@ -41,7 +40,7 @@ export class Form extends React.Component {
       >
         <Accounts.ui.Fields fields={ fields } />
         <Accounts.ui.Buttons buttons={ buttons } />
-        <Accounts.ui.PasswordOrService oauthServices={ oauthServices } translate={ translate } />
+        <Accounts.ui.PasswordOrService oauthServices={ oauthServices } />
         <Accounts.ui.SocialButtons oauthServices={ oauthServices } />
         <Accounts.ui.FormMessages messages={messages} />
       </form>
@@ -53,7 +52,6 @@ Form.propTypes = {
   oauthServices: PropTypes.object,
   fields: PropTypes.object.isRequired,
   buttons: PropTypes.object.isRequired,
-  translate: PropTypes.func.isRequired,
   error: PropTypes.string,
   ready: PropTypes.bool
 };

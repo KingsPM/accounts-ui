@@ -1,5 +1,11 @@
 # ChangeLog
 
+### v1.4.0
+10-Apr-2019
+
+* Removed Translations
+* Fixes to ensure compatibility with later Meteor versions
+
 ### v1.3.1
 08-Feb-2018
 

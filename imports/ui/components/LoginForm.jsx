@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import ReactDOM from 'react-dom';
 import { withTracker } from 'meteor/react-meteor-data';
 import { Accounts } from 'meteor/accounts-base';
-import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { KEY_PREFIX } from '../../login_session.js';
 import { v4 as uuid } from 'uuid';
 import './Form.jsx';
@@ -55,7 +54,6 @@ class LoginForm extends Component {
       onPreSignUpHook: props.onPreSignUpHook || Accounts.ui._options.onPreSignUpHook,
       onPostSignUpHook: props.onPostSignUpHook || Accounts.ui._options.onPostSignUpHook,
     };
-    this.translate = this.translate.bind(this);
   }
 
   componentDidMount() {
@@ -106,10 +104,6 @@ class LoginForm extends Component {
     }
   }
 
-  translate(text) {
-    return T9n.get(text);
-  }
-
   validateField(field, value) {
     const { formState } = this.state;
     switch(field) {
@@ -119,6 +113,7 @@ class LoginForm extends Component {
           this.clearMessage.bind(this),
         );
       case 'password':
+        console.log('validating',value)
         return validatePassword(value,
           this.showMessage.bind(this),
           this.clearMessage.bind(this),
@@ -135,8 +130,8 @@ class LoginForm extends Component {
   getUsernameOrEmailField() {
     return {
       id: 'usernameOrEmail',
-      hint: this.translate('enterUsernameOrEmail'),
-      label: this.translate('usernameOrEmail'),
+      hint: 'Enter username or email',
+      label: 'Username or Email',
       required: true,
       defaultValue: this.state.username || "",
       onChange: this.handleChange.bind(this, 'usernameOrEmail'),
@@ -147,8 +142,8 @@ class LoginForm extends Component {
   getUsernameField() {
     return {
       id: 'username',
-      hint: this.translate('enterUsername'),
-      label: this.translate('username'),
+      hint: 'Enter username',
+      label: 'Username',
       required: true,
       defaultValue: this.state.username || "",
       onChange: this.handleChange.bind(this, 'username'),
@@ -159,8 +154,8 @@ class LoginForm extends Component {
   getEmailField() {
     return {
       id: 'email',
-      hint: this.translate('enterEmail'),
-      label: this.translate('email'),
+      hint: 'Enter Email',
+      label: 'Email',
       type: 'email',
       required: true,
       defaultValue: this.state.email || "",
@@ -172,8 +167,8 @@ class LoginForm extends Component {
   getPasswordField() {
     return {
       id: 'password',
-      hint: this.translate('enterPassword'),
-      label: this.translate('password'),
+      hint: 'Enter password',
+      label: 'Password',
       type: 'password',
       required: true,
       defaultValue: this.state.password || "",
@@ -757,15 +752,9 @@ class LoginForm extends Component {
     const SignUp = function(_options) {
       Accounts.createUser(_options, (error) => {
         if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
-          if (this.translate(`error.accounts.${error.reason}`)) {
-            onSubmitHook(`error.accounts.${error.reason}`, formState);
-          }
-          else {
-            onSubmitHook("unknown_error", formState);
-          }
-        }
-        else {
+          this.showMessage(error.reason || "Unknown Error", 'error');
+          onSubmitHook(error.reason, formState);
+        } else {
           onSubmitHook(null, formState);
           this.setState({ formState: STATES.PROFILE, password: null });
           let user = Accounts.user();
@@ -833,13 +822,7 @@ class LoginForm extends Component {
         this.setState({ waiting: false });
       });
     } else {
-      let errMsg = null;
-      if (["USERNAME_AND_EMAIL_NO_PASSWORD"].includes(passwordSignupFields())) {
-        errMsg = this.translate("error.accounts.invalid_email");
-      }
-      else {
-        errMsg = this.translate("error.accounts.invalid_email");
-      }
+      let errMsg = "Invalid Email";
       this.showMessage(errMsg,'warning');
       onSubmitHook(errMsg, formState);
     }
@@ -863,10 +846,10 @@ class LoginForm extends Component {
 
       Accounts.forgotPassword({ email: email }, (error) => {
         if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
+          this.showMessage(error.reason || "unknown_error", 'error');
         }
         else {
-          this.showMessage(this.translate("info.emailSent"), 'success', 5000);
+          this.showMessage("Email sent", 'success', 5000);
           this.clearDefaultFieldValues();
         }
         onSubmitHook(error, formState);
@@ -900,7 +883,7 @@ class LoginForm extends Component {
           onSubmitHook(error, formState);
         }
         else {
-          this.showMessage(this.translate('info.passwordChanged'), 'success', 5000);
+          this.showMessage("Password changed", 'success', 5000);
           onSubmitHook(null, formState);
           this.setState({ formState: STATES.PROFILE });
           Accounts._loginButtonsSession.set('resetPasswordToken', null);
@@ -926,7 +909,6 @@ class LoginForm extends Component {
   }
 
   showMessage(message, type, clearTimeout, field){
-    message = this.translate(message).trim();
     if (message) {
       this.setState(({ messages = [] }) => {
         messages.push({
@@ -999,7 +981,6 @@ class LoginForm extends Component {
         buttons={this.buttons()}
         {...this.state}
         message={message}
-        translate={text => this.translate(text)}
       />
     );
   }
