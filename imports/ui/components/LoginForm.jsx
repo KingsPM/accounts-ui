@@ -5,6 +5,7 @@ import { withTracker } from 'meteor/react-meteor-data';
 import { Accounts } from 'meteor/accounts-base';
 import { T9n } from 'meteor/softwarerero:accounts-t9n';
 import { KEY_PREFIX } from '../../login_session.js';
+import { v4 as uuid } from 'uuid';
 import './Form.jsx';
 
 import {
@@ -748,7 +749,7 @@ class LoginForm extends Component {
       "USERNAME_AND_EMAIL_NO_PASSWORD"
     ].includes(passwordSignupFields())) {
       // Generate a random password.
-      options.password = Meteor.uuid();
+      options.password = uuid();
     } else if (!this.validateField('password', password)) {
       onSubmitHook("Invalid password", formState);
       error = true;
