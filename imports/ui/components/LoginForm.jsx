@@ -821,7 +821,7 @@ class LoginForm extends Component {
         this.showMessage(error.reason || "Unknown Error", 'error');
       }
       else {
-        this.showMessage("Email sent", 'success', 5000);
+        this.showMessage("Login token has been sent to your email address", 'success', 5000);
         this.clearDefaultFieldValues();
       }
       onSubmitHook(error, formState);
@@ -865,7 +865,7 @@ class LoginForm extends Component {
           this.showMessage(error.reason || "unknown_error", 'error');
         }
         else {
-          this.showMessage("Email sent", 'success', 5000);
+          this.showMessage("Password reset email sent", 'success', 5000);
           this.clearDefaultFieldValues();
         }
         onSubmitHook(error, formState);
