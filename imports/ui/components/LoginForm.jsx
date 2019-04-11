@@ -133,7 +133,7 @@ class LoginForm extends Component {
       hint: 'Enter username or email',
       label: 'Username or Email',
       required: true,
-      defaultValue: this.state.username || "",
+      defaultValue: this.state.usernameOrEmail || "",
       onChange: this.handleChange.bind(this, 'usernameOrEmail'),
       message: this.getMessageForField('usernameOrEmail'),
     };
@@ -148,6 +148,18 @@ class LoginForm extends Component {
       defaultValue: this.state.username || "",
       onChange: this.handleChange.bind(this, 'username'),
       message: this.getMessageForField('username'),
+    };
+  }
+
+  getNameField() {
+    return {
+      id: 'name',
+      hint: 'Enter Full Name (eg. James Bond-Moneypenny)',
+      label: 'Full Name',
+      required: true,
+      defaultValue: this.state.name || "",
+      onChange: this.handleChange.bind(this, 'name'),
+      message: this.getMessageForField('name'),
     };
   }
 
@@ -252,6 +264,9 @@ class LoginForm extends Component {
     }
 
     if (hasPasswordService() && formState == STATES.SIGN_UP) {
+      // Enforce identification of User (Full Name)
+      loginFields.push(this.getNameField());
+
       if ([
         "USERNAME_AND_EMAIL",
         "USERNAME_AND_OPTIONAL_EMAIL",
@@ -702,12 +717,18 @@ class LoginForm extends Component {
       username = null,
       email = null,
       usernameOrEmail = null,
+      name = null,
       password,
       formState,
       onSubmitHook
     } = this.state;
     let error = false;
     this.clearMessages();
+
+    // add name to profile
+    if (name !== null) {
+      options.profile = Object.assign(options.profile || {}, { name });
+    }
 
     if (username !== null) {
       if ( !this.validateField('username', username) ) {
