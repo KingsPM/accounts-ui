@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import ReactDOM from 'react-dom';
+import { Meteor } from 'meteor/meteor';
+import { Redirect } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
 
 import './Fields.jsx';
@@ -27,23 +28,32 @@ export class Form extends React.Component {
       fields,
       buttons,
       error,
-      messages,
+      message,
       ready = true,
-      className
+      className,
+      formState
     } = this.props;
+
     return (
-      <form
-        ref={(ref) => this.form = ref}
-        className={[className, ready ? "ready" : null].join(' ')}
-        className="accounts-ui"
-        noValidate
-      >
-        <Accounts.ui.Fields fields={ fields } />
-        <Accounts.ui.Buttons buttons={ buttons } />
-        <Accounts.ui.PasswordOrService oauthServices={ oauthServices } />
-        <Accounts.ui.SocialButtons oauthServices={ oauthServices } />
-        <Accounts.ui.FormMessages messages={messages} />
-      </form>
+      <div className="container">
+        {Meteor.userId() && <Redirect to={Accounts.ui._options.homeRoutePath} />}
+        <form ref={ref => (this.form = ref)} className={['accounts', className].join(' ')}>
+          {Object.keys(fields).length > 0 ? <Accounts.ui.Fields fields={fields} /> : null}
+          <br />
+          <Accounts.ui.Buttons buttons={buttons} />
+          <br />
+          {formState == STATES.SIGN_IN || formState == STATES.SIGN_UP ? (
+            <div className="or-sep">
+              <Accounts.ui.PasswordOrService oauthServices={oauthServices} />
+            </div>
+          ) : null}
+          {formState == STATES.SIGN_IN || formState == STATES.SIGN_UP ? (
+            <Accounts.ui.SocialButtons oauthServices={oauthServices} />
+          ) : null}
+          <br />
+          <Accounts.ui.FormMessage {...message} />
+        </form>
+      </div>
     );
   }
 }

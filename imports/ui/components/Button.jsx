@@ -1,32 +1,35 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Accounts } from 'meteor/accounts-base';
-
-let Link;
-try { Link = require('react-router').Link; } catch(e) {}
+import { Button as MuiButton } from '@material-ui/core';
 
 export class Button extends React.Component {
-  render () {
-    const {
-      label,
-      href = null,
-      type,
-      disabled = false,
-      className,
-      onClick
-    } = this.props;
-    if (type == 'link') {
-      // Support React Router.
-      if (Link && href) {
-        return <Link to={ href } className={ className }>{ label }</Link>;
-      } else {
-        return <a href={ href } className={ className } onClick={ onClick }>{ label }</a>;
-      }
-    }
-    return <button className={ className }
-                   type={ type } 
-                   disabled={ disabled }
-                   onClick={ onClick }>{ label }</button>;
+  render() {
+    const { label, href = null, type, disabled = false, onClick, className, icon } = this.props;
+    return type == 'link' ? (
+      <MuiButton
+        variant="text"
+        href={href}
+        className={className}
+        onClick={onClick}
+        disabled={disabled}
+        style={{ marginRight: '5px' }}
+      >
+        {label}
+      </MuiButton>
+    ) : (
+      <MuiButton
+        variant="contained"
+        color="primary"
+        type={type}
+        className={className}
+        onClick={onClick}
+        disabled={disabled}
+        style={{ marginRight: '5px' }}
+      >
+        {label}
+      </MuiButton>
+    );
   }
 }
 

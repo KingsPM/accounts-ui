@@ -1,8 +1,13 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { Accounts } from 'meteor/accounts-base';
+import {
+  TextField,
+} from '@material-ui/core';
+import uuid from 'uuid/v4';
 
 export class Field extends React.Component {
+  input = null;
   constructor(props) {
     super(props);
     this.state = {
@@ -11,9 +16,8 @@ export class Field extends React.Component {
   }
 
   triggerUpdate() {
-    // Trigger an onChange on inital load, to support browser prefilled values.
     const { onChange } = this.props;
-    if (this.input && onChange) {
+    if (this.input) {
       onChange({ target: { value: this.input.value } });
     }
   }
@@ -42,28 +46,29 @@ export class Field extends React.Component {
       type = 'text',
       onChange,
       required = false,
-      className = "field",
-      defaultValue = "",
-      message,
+      className,
+      defaultValue = '',
+      message
     } = this.props;
     const { mount = true } = this.state;
-    if (type == 'notice') {
-      return <div className={ className }>{ label }</div>;
-    }
+    const fieldId = id || uuid();
     return mount ? (
-      <div className={ className }>
-        <label htmlFor={ id }>{ label }</label>
-        <input
-          id={ id }
-          ref={ (ref) => this.input = ref }
-          type={ type }
-          onChange={ onChange }
-          placeholder={ hint }
-          defaultValue={ defaultValue }
+      <div className={className}>
+        <TextField
+          label={label}
+          placeholder={hint}
+          onChange={onChange}
+          fullWidth={true}
+          defaultValue={defaultValue}
+          name={fieldId}
+          type={type}
+          // ref={(ref) => { console.log('ref',ref); this.input = ref }}
+          required={!!required}
         />
         {message && (
           <span className={['message', message.type].join(' ').trim()}>
-            {message.message}</span>
+            {message.message}
+          </span>
         )}
       </div>
     ) : null;
