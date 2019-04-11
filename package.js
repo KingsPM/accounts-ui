@@ -1,6 +1,6 @@
 Package.describe({
   name: 'std:accounts-ui',
-  version: '1.3.4',
+  version: '1.4.0',
   summary: 'Accounts UI for React in Meteor 1.6+',
   git: 'https://github.com/kingspm/accounts-ui',
   documentation: 'README.md'
@@ -18,7 +18,6 @@ Package.onUse(function(api) {
   api.use('tmeasday:check-npm-versions@0.3.0');
 
   api.imply('accounts-base');
-  api.imply('softwarerero:accounts-t9n@1.3.3');
 
   api.use('accounts-oauth', {weak: true});
   api.use('accounts-password', {weak: true});

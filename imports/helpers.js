@@ -64,10 +64,10 @@ export function validateEmail(email, showMessage, clearMessage) {
   if (Accounts.ui._options.emailPattern.test(email)) {
     return true;
   } else if (!email || email.length === 0) {
-    showMessage("error.emailRequired", 'warning', false, 'email');
+    showMessage("Email required", 'warning', false, 'email');
     return false;
   } else {
-    showMessage("error.accounts.Invalid email", 'warning', false, 'email');
+    showMessage("Invalid email", 'warning', false, 'email');
     return false;
   }
 }
@@ -76,8 +76,7 @@ export function validatePassword(password = '', showMessage, clearMessage){
   if (password.length >= Accounts.ui._options.minimumPasswordLength) {
     return true;
   } else {
-    // const errMsg = T9n.get("error.minChar").replace(/7/, Accounts.ui._options.minimumPasswordLength);
-    const errMsg = "error.minChar";
+    const errMsg = "Password does not meet minimum length requirement";
     showMessage(errMsg, 'warning', false, 'password');
     return false;
   }
@@ -88,7 +87,7 @@ export function validateUsername(username, showMessage, clearMessage, formState)
     return true;
   } else {
     const fieldName = (passwordSignupFields() === 'USERNAME_ONLY' || formState === STATES.SIGN_UP) ? 'username' : 'usernameOrEmail';
-    showMessage("error.usernameRequired", 'warning', false, fieldName);
+    showMessage("Username is required", 'warning', false, fieldName);
     return false;
   }
 }
@@ -98,11 +97,7 @@ export function redirect(redirect) {
     if (window.history) {
       // Run after all app specific redirects, i.e. to the login screen.
       Meteor.setTimeout(() => {
-        if (Package['kadira:flow-router']) {
-          Package['kadira:flow-router'].FlowRouter.go(redirect);
-        } else if (Package['kadira:flow-router-ssr']) {
-          Package['kadira:flow-router-ssr'].FlowRouter.go(redirect);
-        } else if (browserHistory) {
+        if (browserHistory) {
           browserHistory.push(redirect);
         } else {
           window.history.pushState( {} , 'redirect', redirect );

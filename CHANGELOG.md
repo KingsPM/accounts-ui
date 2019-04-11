@@ -1,10 +1,12 @@
 # ChangeLog
 
 ### v1.4.0
-10-Apr-2019
+11-Apr-2019
 
 * Removed Translations
 * Fixes to ensure compatibility with later Meteor versions
+* Removed FlowRouter support
+* Material-UI based forms as default
 
 ### v1.3.1
 08-Feb-2018

@@ -180,8 +180,8 @@ class LoginForm extends Component {
   getSetPasswordField() {
     return {
       id: 'newPassword',
-      hint: this.translate('enterPassword'),
-      label: this.translate('choosePassword'),
+      hint: 'Enter password',
+      label: 'Choose password',
       type: 'password',
       required: true,
       onChange: this.handleChange.bind(this, 'newPassword')
@@ -191,8 +191,8 @@ class LoginForm extends Component {
   getNewPasswordField() {
     return {
       id: 'newPassword',
-      hint: this.translate('enterNewPassword'),
-      label: this.translate('newPassword'),
+      hint: 'Enter new password',
+      label: 'New password',
       type: 'password',
       required: true,
       onChange: this.handleChange.bind(this, 'newPassword'),
@@ -314,7 +314,7 @@ class LoginForm extends Component {
     if (user && formState == STATES.PROFILE) {
       loginButtons.push({
         id: 'signOut',
-        label: this.translate('signOut'),
+        label: 'Sign out',
         disabled: waiting,
         onClick: this.signOut.bind(this)
       });
@@ -323,7 +323,7 @@ class LoginForm extends Component {
     if (this.showCreateAccountLink()) {
       loginButtons.push({
         id: 'switchToSignUp',
-        label: this.translate('signUp'),
+        label: 'Sign up',
         type: 'link',
         href: signUpPath,
         onClick: this.switchToSignUp.bind(this)
@@ -333,7 +333,7 @@ class LoginForm extends Component {
     if (formState == STATES.SIGN_UP || formState == STATES.PASSWORD_RESET) {
       loginButtons.push({
         id: 'switchToSignIn',
-        label: this.translate('signIn'),
+        label: 'Sign in',
         type: 'link',
         href: loginPath,
         onClick: this.switchToSignIn.bind(this)
@@ -343,7 +343,7 @@ class LoginForm extends Component {
     if (this.showForgotPasswordLink()) {
       loginButtons.push({
         id: 'switchToPasswordReset',
-        label: this.translate('forgotPassword'),
+        label: 'Forgot password',
         type: 'link',
         href: resetPasswordPath,
         onClick: this.switchToPasswordReset.bind(this)
@@ -358,7 +358,7 @@ class LoginForm extends Component {
       && (user.services && 'password' in user.services)) {
       loginButtons.push({
         id: 'switchToChangePassword',
-        label: this.translate('changePassword'),
+        label: 'Change password',
         type: 'link',
         href: changePasswordPath,
         onClick: this.switchToChangePassword.bind(this)
@@ -368,7 +368,7 @@ class LoginForm extends Component {
     if (formState == STATES.SIGN_UP) {
       loginButtons.push({
         id: 'signUp',
-        label: this.translate('signUp'),
+        label: 'Sign up',
         type: hasPasswordService() ? 'submit' : 'link',
         className: 'active',
         disabled: waiting,
@@ -379,7 +379,7 @@ class LoginForm extends Component {
     if (this.showSignInLink()) {
       loginButtons.push({
         id: 'signIn',
-        label: this.translate('signIn'),
+        label: 'Sign in',
         type: hasPasswordService() ? 'submit' : 'link',
         className: 'active',
         disabled: waiting,
@@ -390,7 +390,7 @@ class LoginForm extends Component {
     if (formState == STATES.PASSWORD_RESET) {
       loginButtons.push({
         id: 'emailResetLink',
-        label: this.translate('resetYourPassword'),
+        label: 'Reset your password',
         type: 'submit',
         disabled: waiting,
         onClick: this.passwordReset.bind(this)
@@ -400,7 +400,7 @@ class LoginForm extends Component {
     if (this.showPasswordChangeForm() || this.showEnrollAccountForm()) {
       loginButtons.push({
         id: 'changePassword',
-        label: (this.showPasswordChangeForm() ? this.translate('changePassword') : this.translate('setPassword')),
+        label: this.showPasswordChangeForm() ? 'Change password' : 'Set password',
         type: 'submit',
         disabled: waiting,
         onClick: this.passwordChange.bind(this)
@@ -409,7 +409,7 @@ class LoginForm extends Component {
       if (Accounts.user()) {
         loginButtons.push({
           id: 'switchToSignOut',
-          label: this.translate('cancel'),
+          label: 'Cancel',
           type: 'link',
           href: profilePath,
           onClick: this.switchToSignOut.bind(this)
@@ -417,7 +417,7 @@ class LoginForm extends Component {
       } else {
         loginButtons.push({
           id: 'cancelResetPassword',
-          label: this.translate('cancel'),
+          label: 'Cancel',
           type: 'link',
           onClick: this.cancelResetPassword.bind(this),
         });
@@ -624,7 +624,7 @@ class LoginForm extends Component {
       Meteor.loginWithPassword(loginSelector, password, (error, result) => {
         onSubmitHook(error,formState);
         if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
+          this.showMessage(error.reason || "Unknown Error", 'error');
         }
         else {
           loginResultCallback(() => this.state.onSignedInHook());
@@ -685,7 +685,7 @@ class LoginForm extends Component {
     loginWithService(options, (error) => {
       onSubmitHook(error,formState);
       if (error) {
-        this.showMessage(`error.accounts.${error.reason}` || "unknown_error");
+        this.showMessage(error.reason || "Unknown Error");
       } else {
         this.setState({ formState: STATES.PROFILE });
         this.clearDefaultFieldValues();
@@ -795,32 +795,27 @@ class LoginForm extends Component {
       return;
     }
 
+    const loginCallback = (error) => {
+      if (error) {
+        this.showMessage(error.reason || "Unknown Error", 'error');
+      }
+      else {
+        this.showMessage("Email sent", 'success', 5000);
+        this.clearDefaultFieldValues();
+      }
+      onSubmitHook(error, formState);
+      this.setState({ waiting: false });
+    };
+
+    // do login
     if (email && this.validateField('email', email)) {
       this.setState({ waiting: true });
-      Accounts.loginWithoutPassword({ email: email }, (error) => {
-        if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
-        }
-        else {
-          this.showMessage("info.emailSent", 'success', 5000);
-          this.clearDefaultFieldValues();
-        }
-        onSubmitHook(error, formState);
-        this.setState({ waiting: false });
-      });
+      Accounts.loginWithoutPassword(
+        { email: email }, loginCallback);
     } else if (this.validateField('username', usernameOrEmail)) {
       this.setState({ waiting: true });
-      Accounts.loginWithoutPassword({ email: usernameOrEmail, username: usernameOrEmail }, (error) => {
-        if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
-        }
-        else {
-          this.showMessage("info.emailSent", 'success', 5000);
-          this.clearDefaultFieldValues();
-        }
-        onSubmitHook(error, formState);
-        this.setState({ waiting: false });
-      });
+      Accounts.loginWithoutPassword(
+        { email: usernameOrEmail, username: usernameOrEmail }, loginCallback);
     } else {
       let errMsg = "Invalid Email";
       this.showMessage(errMsg,'warning');
@@ -879,7 +874,7 @@ class LoginForm extends Component {
     if (token) {
       Accounts.resetPassword(token, newPassword, (error) => {
         if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
+          this.showMessage(error.reason || "Unknown Error", 'error');
           onSubmitHook(error, formState);
         }
         else {
@@ -895,11 +890,11 @@ class LoginForm extends Component {
     else {
       Accounts.changePassword(password, newPassword, (error) => {
         if (error) {
-          this.showMessage(`error.accounts.${error.reason}` || "unknown_error", 'error');
+          this.showMessage(error.reason || "Unknown Error", 'error');
           onSubmitHook(error, formState);
         }
         else {
-          this.showMessage('info.passwordChanged', 'success', 5000);
+          this.showMessage('Password changed', 'success', 5000);
           onSubmitHook(null, formState);
           this.setState({ formState: STATES.PROFILE });
           this.clearDefaultFieldValues();
