@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { Meteor } from 'meteor/meteor';
 import { Redirect } from 'react-router-dom';
 import { Accounts } from 'meteor/accounts-base';
+import { STATES } from '../../helpers';
 
 import './Fields.jsx';
 import './Buttons.jsx';
